@@ -8,7 +8,7 @@ class User(AbstractUser) :
         max_length=30,
         unique = True,
         validators = [RegexValidator(
-            regex = r"^@\w{3}$",
+            regex = r"^@\w{3,}$", #any string that has a @ followed by at least 3 numbers or letters
             message = "Username must be @ followed by at least 3 alphanumericals"
         )]
     )
