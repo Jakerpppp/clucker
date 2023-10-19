@@ -22,11 +22,11 @@ class UserModelTestCase(TestCase):
         self._assert_user_is_invalid()
 
     def test_username_can_be_30_characters_long(self):
-        self.user.username = '@'  'x' * 29
+        self.user.username = '@' + 'x' * 29
         self._assert_user_is_valid()
 
     def test_username_cannot_be_over_30_characters_long(self):
-        self.user.username = '@'  'x' * 30
+        self.user.username = '@' + 'x' * 30
         self._assert_user_is_invalid()
 
     def test_username_must_be_unique(self):
