@@ -8,22 +8,12 @@ class SignUpForms(forms.ModelForm):
         fields = ["first_name","last_name","username","email","bio"]
         widgets = {"bio": forms.Textarea()}
     password = forms.CharField(
-        label="Password:",
+        label="password:",
         widget=forms.PasswordInput(),
-        validators = [
-            RegexValidator(
-                regex = r"[A-Z]", #any string that contains an upper case letter
-                message = "Password must have at least one upper case character"
-            ),
-            RegexValidator(
-                regex = r"[0-9]", #any string that contains a number
-                message = "Password must have at least one upper case character"
-            ),
-            RegexValidator(
-                regex = r"[a-z]", #any string that contains a lower case
-                message = "Password must have at least one upper case character"
-            ),
-
+        validators=[RegexValidator(
+            regex=r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
+            message='Password must contain an uppercase character, a lowercase character and a number' 
+            )
         ]
     )
     passwordConfirmation = forms.CharField(label="Confirm Password:", widget=forms.PasswordInput())
@@ -31,6 +21,6 @@ class SignUpForms(forms.ModelForm):
     def clean(self):
         super().clean()
         password = self.cleaned_data.get("password")
-        passwordConfirmation = self.full_clean("passwordConfirmation")
+        passwordConfirmation = self.cleaned_data.get("passwordConfirmation")
         if password != passwordConfirmation:
-            self.add_errors("passwordConfirmation", "Passwords do not match")
+            self.add_error("passwordConfirmation", "Passwords do not match")

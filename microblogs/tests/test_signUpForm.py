@@ -11,8 +11,8 @@ class SignUpFormTestCase(TestCase):
             "username" :"@johndow1",
             "email" : "johndoe@gmail.com",
             "bio" : "John Doe is a talking head",
-            "password" : "UhDoe",
-            "passwordConfirmation" : "UhDoe"
+            "password" : "UhDoe1",
+            "passwordConfirmation" : "UhDoe1"
         }
         form = SignUpForms(data=form_input)
         print(form.errors)
