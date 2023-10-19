@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
-from microblogs.forms import SignUpForms
+from microblogs.forms import LogInForm, SignUpForms
 
 # Create your views here.
 def home(request):
@@ -11,7 +11,11 @@ def feed(request):
     return render(request, "feed.html")
 
 def log_in(request):
-    return render(request, "log_in.html")
+    if request.method == "POST":
+        form = LogInForm(request.POST)
+    else:
+        form = LogInForm()
+    return render(request, "log_in.html", {"form": form})
 
 def sign_up(request):
     if request.method == "POST":
