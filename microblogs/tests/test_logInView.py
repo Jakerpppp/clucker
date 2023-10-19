@@ -5,6 +5,8 @@ from django.urls import reverse
 from microblogs.models import User
 from .helpers import LogInTester
 
+from django.contrib import messages
+
 """Tests of the Log In View"""
 class LogInViewTestCase(TestCase, LogInTester):
 
@@ -46,6 +48,9 @@ class LogInViewTestCase(TestCase, LogInTester):
         self.assertTrue(isinstance(form, LogInForm))  
         self.assertFalse(form.is_bound)
         self.assertFalse(self.is_logged_in())
+        messages_list = list(response.context["messages"])
+        self.assertEquals(len(messages_list), 1)
+        self.assertEquals(messages_list[0].level, messages.ERROR)
 
     def test_successful_log_in(self):
         response = self.client.post(self.url, self.form_input, follow = True)
