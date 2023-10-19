@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from microblogs.forms import LogInForm, SignUpForms
@@ -11,6 +11,10 @@ def home(request):
 
 def feed(request):
     return render(request, "feed.html")
+
+def log_out(request):
+    logout(request)
+    return redirect("home")
 
 def log_in(request):
     if request.method == "POST":
