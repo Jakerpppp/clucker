@@ -1,0 +1,5 @@
+from django.test import TestCase
+
+"""Unit Tests of the Log In Form"""
+class LogInFormTestCase(TestCase):
+    pass
