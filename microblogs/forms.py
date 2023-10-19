@@ -8,7 +8,7 @@ class SignUpForms(forms.ModelForm):
         fields = ["first_name","last_name","username","email","bio"]
         widgets = {"bio": forms.Textarea()}
     password = forms.CharField(
-        label="password:",
+        label="Password:",
         widget=forms.PasswordInput(),
         validators=[RegexValidator(
             regex=r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
@@ -36,3 +36,8 @@ class SignUpForms(forms.ModelForm):
             password = self.cleaned_data.get("password")
         )
         return user
+    
+
+class LogInForm(forms.Form):
+    username = forms.CharField(label="Username")
+    password = forms.CharField(label="Password",widget=forms.PasswordInput())
