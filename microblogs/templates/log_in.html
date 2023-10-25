@@ -1,17 +1,13 @@
-<htmL>
-    <head>
-        <title>
-            Clucker
-        </title>
-    </head>
-    <body>
-        <h1> Log In </h1>
-        {% for message in messages %}
-        <p> <b> {{ message }} </b></p>
-        {% endfor %}
-        <form action = "{% url 'log_in' %}" method="post"> 
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value = "Log In">
-    </body>
-</htmL>
+{% extends "base.html" %}
+{% block body %}
+<body>
+    <h1> Log In </h1>
+    {% for message in messages %}
+    <p> <b> {{ message }} </b></p>
+    {% endfor %}
+    <form action = "{% url 'log_in' %}" method="post"> 
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value = "Log In">
+</body>
+{% endblock %}
