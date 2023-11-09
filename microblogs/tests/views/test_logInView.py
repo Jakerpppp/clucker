@@ -10,18 +10,12 @@ from django.contrib import messages
 """Tests of the Log In View"""
 class LogInViewTestCase(TestCase, LogInTester):
 
+    fixtures = ["microblogs/tests/fixtures/default_user.json"]
+
 
     def setUp(self):
         self.url = reverse("log_in")
-        self.user = User.objects.create_user(
-            first_name = 'Jane',
-            last_name = 'Doe',
-            username = '@janedoe',
-            email = 'janedoe@example.org',
-            bio = 'Jane Doe is also a talking head',
-            password = 'Password123',
-            is_active = True
-        )
+        self.user = User.objects.get(username = "@janedoe")
         self.form_input = {
             "username" :"@janedoe",
             "password" : "Password123",

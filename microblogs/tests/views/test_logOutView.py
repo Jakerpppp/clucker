@@ -8,17 +8,11 @@ from ..helpers import LogInTester
 """Tests of the Log Out View"""
 class LogOutViewTestCase(TestCase, LogInTester):
 
+    fixtures = ["microblogs/tests/fixtures/default_user.json"]
+
     def setUp(self):
         self.url = reverse("log_out")
-        self.user = User.objects.create_user(
-            first_name = 'Jane',
-            last_name = 'Doe',
-            username = '@janedoe',
-            email = 'janedoe@example.org',
-            bio = 'Jane Doe is also a talking head',
-            password = 'Password123',
-            is_active = True
-        )
+        self.user = self.user = User.objects.get(username = "@janedoe")
         self.form_input = {
             "username" :"@janedoe",
             "password" : "Password123",
