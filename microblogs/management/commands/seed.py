@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from faker import Faker
 from microblogs.models import User
+from django.db.utils import IntegrityError
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
@@ -16,7 +17,7 @@ class Command(BaseCommand):
             print(f'Seeding user {user_count}',  end='\r')
             try:
                 self._create_user()
-            except (django.db.utils.IntegrityError):
+            except (IntegrityError):
                 continue
             user_count += 1
         print('User seeding complete')
