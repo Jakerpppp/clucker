@@ -3,7 +3,7 @@ from microblogs.forms import LogInForm
 from django.urls import reverse
 
 from microblogs.models import User
-from .helpers import LogInTester
+from ..helpers import LogInTester
 
 from django.contrib import messages
 

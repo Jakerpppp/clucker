@@ -4,7 +4,7 @@ from microblogs.models import User
 from django.urls import reverse
 from django.contrib.auth.hashers import check_password
 
-from .helpers import LogInTester
+from ..helpers import LogInTester
 
 """Tests of the Sign Up View"""
 class SignUpViewTestCase(TestCase, LogInTester):
