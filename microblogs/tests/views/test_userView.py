@@ -13,6 +13,7 @@ class ShowUserTest(TestCase):
         self.assertEqual(self.url,f'/user/{self.user.id}')
 
     def test_get_show_user_with_valid_id(self):
+        self.client.login(username = self.user.username, password = "Password123")
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'show_user.html')

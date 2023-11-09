@@ -12,6 +12,17 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.contrib.auth.decorators import login_required
 
+
+def login_prohibited(view_function):
+    def modified_view_function(request):
+        if request.user.is_authenticated:
+            #if the user is authenicated, they go to the feed screen
+            return redirect('feed')
+        else:
+            #otherwise we call the view_function withe the request
+            return view_function(request)
+    return modified_view_function
+
 # Create your views here.
 def home(request):
     return render(request, "home.html")
@@ -26,6 +37,7 @@ def log_out(request):
     logout(request)
     return redirect("home")
 
+@login_prohibited
 def log_in(request):
     if request.method == "POST":
         form = LogInForm(request.POST)
@@ -42,6 +54,8 @@ def log_in(request):
     next = request.GET.get('next') or ''
     return render(request, "log_in.html", {"form": form, "next" : next})
 
+
+@login_prohibited
 def sign_up(request):
     if request.method == "POST":
         form = SignUpForms(request.POST)
