@@ -7,6 +7,8 @@ from ..helpers import LogInTester
 
 from django.contrib import messages
 
+from ..helpers import reverse_with_next
+
 """Tests of the Log In View"""
 class LogInViewTestCase(TestCase, LogInTester):
 
@@ -30,7 +32,21 @@ class LogInViewTestCase(TestCase, LogInTester):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response,"log_in.html")
         form = response.context["form"]
+        next = response.context["next"]
         self.assertTrue(isinstance(form, LogInForm))  
+        self.assertFalse(next)
+        self.assertFalse(form.is_bound)
+
+    def test_get_log_in_with_redirect(self):
+        destination_url = reverse("user_list")
+        self.url = reverse_with_next("log_in", destination_url)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response,"log_in.html")
+        form = response.context["form"]
+        next = response.context["next"]
+        self.assertTrue(isinstance(form, LogInForm))  
+        self.assertEqual(next, destination_url)
         self.assertFalse(form.is_bound)
 
     def test_unsuccessful_log_in(self):
@@ -52,6 +68,14 @@ class LogInViewTestCase(TestCase, LogInTester):
         response_url = reverse("feed")
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response,"feed.html")
+
+    def test_successful_log_in_with_redirect(self):
+        redirect_url = reverse("user_list")
+        form_input = {"username": "@johndoe", "password": "Password123", "next" : redirect_url}
+        response = self.client.post(self.url, form_input, follow = True)
+        self.assertTrue(self.is_logged_in())
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response,"user_list.html")
 
 
     """Admins can make a user Active or Not, it is the equivalence of banning a user

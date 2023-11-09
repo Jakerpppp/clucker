@@ -5,22 +5,33 @@ from microblogs.models import User
 
 
 class UserListTest(TestCase):
+
+    fixtures = ["microblogs/tests/fixtures/default_user.json"]
+
     def setUp(self):
         self.url = reverse('user_list')
+        self.user = User.objects.get(username = "@johndoe")
 
     def test_user_list_url(self):
         self.assertEqual(self.url,'/users/')
 
     def test_get_user_list(self):
+        self.client.login(username = self.user.username, password = "Password123")
         self._create_test_users(15)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'user_list.html')
-        self.assertEqual(len(response.context['users']), 15)
+        self.assertEqual(len(response.context['users']), 17)
         for user_id in range(15):
             self.assertContains(response, f'@user{user_id}')
             self.assertContains(response, f'First{user_id}')
             self.assertContains(response, f'Last{user_id}')
+
+    def test_user_list_when_not_logged_in(self):
+        redirect_url = reverse("log_in") + f"?next={self.url}"
+        response = self.client.get(self.url)
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
 
     def _create_test_users(self, user_count=10):
         for user_id in range(user_count):

@@ -10,6 +10,8 @@ from django.http import HttpResponseForbidden
 
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def home(request):
     return render(request, "home.html")
@@ -31,10 +33,12 @@ def log_in(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("feed")
+                redirect_url = request.POST.get('next') or 'feed'
+                return redirect(redirect_url)
         messages.add_message(request, messages.ERROR, "The Credentials Provided were Invalid")
     form = LogInForm()
-    return render(request, "log_in.html", {"form": form})
+    next = request.GET.get('next') or ''
+    return render(request, "log_in.html", {"form": form, "next" : next})
 
 def sign_up(request):
     if request.method == "POST":
@@ -62,7 +66,8 @@ def new_post(request):
             return redirect('log_in')
     else:
         return HttpResponseForbidden()
-    
+
+@login_required
 def user_list(request):
     users = User.objects.all()
     return render(request, 'user_list.html', {'users': users})
