@@ -16,6 +16,8 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     return render(request, "home.html")
 
+
+@login_required
 def feed(request):
     form = PostForm()
     return render(request, "feed.html", {"form": form})
@@ -72,6 +74,8 @@ def user_list(request):
     users = User.objects.all()
     return render(request, 'user_list.html', {'users': users})
 
+
+@login_required
 def show_user(request, user_id):
     try:
         user = User.objects.get(id=user_id)
