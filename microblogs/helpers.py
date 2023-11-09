@@ -12,3 +12,5 @@ def login_prohibited(view_function):
             #otherwise we call the view_function withe the request
             return view_function(request)
     return modified_view_function
+
+

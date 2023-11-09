@@ -2,6 +2,8 @@
 from django.test import TestCase
 from django.urls import reverse
 from microblogs.forms import PostForm
+from ..helpers import create_posts
+from microblogs.models import User
 
 
 class FeedViewTestCase(TestCase):
@@ -23,3 +25,14 @@ class FeedViewTestCase(TestCase):
         form = response.context['form']
         self.assertTrue(isinstance(form, PostForm))
         self.assertFalse(form.is_bound)
+
+    def test_feed_shows_users_own_posts(self):
+        self.client.login(username=self.user.username, password='Password123')
+        other_user = User.objects.get(username='@janedoe')
+        create_posts(other_user, 100, 103)
+        create_posts(self.user, 200, 203)
+        response = self.client.get(self.url)
+        for count in range(100, 103):
+            self.assertNotContains(response, f'Post__{count}')
+        for count in range(200, 203):
+            self.assertContains(response, f'Post__{count}')
