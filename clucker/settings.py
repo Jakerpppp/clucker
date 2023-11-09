@@ -133,6 +133,8 @@ AUTH_USER_MODEL = "microblogs.User"
 
 LOGIN_URL = "log_in"
 
+REDIRECT_URL_WHEN_LOGGED_IN = "feed"
+
 #Message level tags as bootstrap
 MESSAGE_TAGS = {
     message_constants.DEBUG: "dark",

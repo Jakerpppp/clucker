@@ -12,18 +12,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.contrib.auth.decorators import login_required
 
+from .helpers import login_prohibited
 
-def login_prohibited(view_function):
-    def modified_view_function(request):
-        if request.user.is_authenticated:
-            #if the user is authenicated, they go to the feed screen
-            return redirect('feed')
-        else:
-            #otherwise we call the view_function withe the request
-            return view_function(request)
-    return modified_view_function
-
-# Create your views here.
+@login_prohibited
 def home(request):
     return render(request, "home.html")
 
