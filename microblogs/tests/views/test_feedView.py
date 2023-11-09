@@ -12,6 +12,7 @@ class FeedViewTestCase(TestCase):
     fixtures = ["microblogs/tests/fixtures/default_user.json"]
 
     def setUp(self):
+        self.user = User.objects.get(username = "@johndoe")
         self.url = reverse('feed')
 
     def test_feed_url(self):
@@ -27,7 +28,7 @@ class FeedViewTestCase(TestCase):
         self.assertFalse(form.is_bound)
 
     def test_feed_shows_users_own_posts(self):
-        self.client.login(username=self.user.username, password='Password123')
+        self.client.login(username="@johndoe", password='Password123')
         other_user = User.objects.get(username='@janedoe')
         create_posts(other_user, 100, 103)
         create_posts(self.user, 200, 203)
