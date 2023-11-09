@@ -12,7 +12,7 @@ class LogOutViewTestCase(TestCase, LogInTester):
 
     def setUp(self):
         self.url = reverse("log_out")
-        self.user = self.user = User.objects.get(username = "@janedoe")
+        self.user = User.objects.get(username = "@janedoe")
         self.form_input = {
             "username" :"@janedoe",
             "password" : "Password123",

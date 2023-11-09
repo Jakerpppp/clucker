@@ -16,7 +16,7 @@
 
     {
         "model" : "microblogs.user",
-        "pk" :  1,
+        "pk" :  2,
         "fields" : {
             "first_name" : "John",
             "last_name" : "Doe",

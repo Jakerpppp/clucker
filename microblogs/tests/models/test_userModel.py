@@ -4,15 +4,10 @@ from microblogs.models import User
 
 class UserModelTestCase(TestCase):
 
+    fixtures = ["microblogs/tests/fixtures/default_user.json"]
+
     def setUp(self):
-            self.user = User.objects.create_user(
-            '@johndoe',
-            first_name='John',
-            last_name='Doe',
-            email='johndoe@example.org',
-            password='Password123',
-            bio='The quick brown fox jumps over the lazy dog.'
-        )
+        self.user = User.objects.get(username = "@johndoe")
 
     def test_valid_user(self):
         self._assert_user_is_valid()
@@ -145,12 +140,5 @@ class UserModelTestCase(TestCase):
             self.user.full_clean()
 
     def _create_second_user(self):
-        user = User.objects.create_user(
-            '@janedoe',
-            first_name='Jane',
-            last_name='Doe',
-            email='janedoe@example.org',
-            password='Password123',
-            bio="This is Jane's profile."
-        )
+        user = User.objects.get(username = "@janedoe")
         return user
