@@ -31,6 +31,18 @@ class User(AbstractUser) :
     """Return a URL to a miniature version of the user's gravatar."""
     def mini_gravatar(self):
         return self.gravatar(size=60)
+    
+    def toggle_follow(self, followee):
+        pass
+
+    def is_following(self, user):
+        pass
+
+    def follower_count(self):
+        pass
+
+    def followee_count(self):
+        pass
 
 """Posts by users in their microblogs."""
 class Post(models.Model):
