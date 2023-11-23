@@ -1,3 +1,5 @@
+from typing import Any
+from django import http
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
@@ -47,45 +49,29 @@ class LogInView(View):
     http_method_names = ['get', 'post']
 
     @method_decorator(login_prohibited)
+    def dispatch(self, request):
+        return super().dispatch(request)
+
+
     def get(self, request):
         '''Display Log In View'''
-        form = LogInForm()
-        next = request.GET.get('next') or ''
-        return render(request, "log_in.html", {"form": form, "next" : next})
+        self.next = request.GET.get('next') or ''
+        return self.render()
 
-    @method_decorator(login_prohibited)
     def post(self, request):
         '''Handle Log In Attempt'''
         form = LogInForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                redirect_url = request.POST.get('next') or 'feed'
-                return redirect(redirect_url)
-            messages.add_message(request, messages.ERROR, "The Credentials Provided were Invalid")
-        next = request.GET.get('next') or ''
-        return render(request, "log_in.html", {"form": form, "next" : next})
-
-
-@login_prohibited
-def log_in(request):
-    if request.method == "POST":
-        form = LogInForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                redirect_url = request.POST.get('next') or 'feed'
-                return redirect(redirect_url)
+        self.next = request.POST.get('next') or 'feed'
+        user = form.get_user()
+        if user is not None:
+            login(request, user)
+            return redirect(self.next)
         messages.add_message(request, messages.ERROR, "The Credentials Provided were Invalid")
-    form = LogInForm()
-    next = request.GET.get('next') or ''
-    return render(request, "log_in.html", {"form": form, "next" : next})
+        return self.render()
+
+    def render(self):
+        form = LogInForm()
+        return render(self.request, "log_in.html", {"form": form, "next" : self.next})
 
 
 @login_prohibited

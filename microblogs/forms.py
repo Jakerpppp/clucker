@@ -1,6 +1,7 @@
 from django import forms
 from microblogs.models import User, Post
 from django.core.validators import RegexValidator
+from django.contrib.auth import authenticate
 
 class SignUpForms(forms.ModelForm):
     class Meta:
@@ -42,6 +43,15 @@ class LogInForm(forms.Form):
     username = forms.CharField(label="Username")
     password = forms.CharField(label="Password",widget=forms.PasswordInput())
 
+
+    def get_user(self):
+        '''Returns True if the User is Valid'''
+        user = None
+        if self.is_valid():
+            username = self.cleaned_data.get("username")
+            password = self.cleaned_data.get("password")
+            user = authenticate(username=username, password=password)
+        return user
 
 """Form to ask user for post text. The post author must be by the post creator.
     """
