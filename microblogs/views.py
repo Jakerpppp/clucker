@@ -16,6 +16,7 @@ from django.views import View
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ImproperlyConfigured
 
 @login_prohibited
 def home(request):
@@ -44,16 +45,37 @@ def follow_toggle(request, user_id):
         return redirect('user_list')
     else:
         return redirect('show_user', user_id)
+        
+
+
+class LogInProhibitedMixin:
+
+    redirect_when_logged_in = None
+
+    def dispatch(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return self.handle_already_logged_in(*args, **kwargs)
+        else:
+            return super().dispatch(*args, **kwargs)
+        
+    def get_redirect_when_logged_in(self):
+        if self.redirect_when_logged_in is None:
+            raise ImproperlyConfigured
+        else:
+            return self.redirect_when_logged_in
+        
+    def handle_already_logged_in(self, *args, **kwargs):
+        url = self.get_redirect_when_logged_in
+        return redirect(url)
+
+
     
 
-class LogInView(View):
+class LogInView(LogInProhibitedMixin,View):
     '''Log In View'''
 
     http_method_names = ['get', 'post']
-
-    @method_decorator(login_prohibited)
-    def dispatch(self, request):
-        return super().dispatch(request)
+    redirect_when_logged_in = 'feed'
 
 
     def get(self, request):
@@ -112,7 +134,6 @@ class UserListView(LoginRequiredMixin, ListView):
     context_object_name = "users" #Stores the list of all users in the 'users' variable
 
 
-
 class ShowUserView(LoginRequiredMixin, DetailView):
     '''Shows individual Data'''
     model = User
@@ -134,19 +155,6 @@ class ShowUserView(LoginRequiredMixin, DetailView):
         except Http404:
             return redirect('user_list')
 
-    
-
-@login_required
-def show_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        posts = Post.objects.filter(author = user)
-        following = request.user.is_following(user)
-        followable = request.user != user
-    except ObjectDoesNotExist:
-        return redirect('user_list')
-    else:
-        return render(request, 'show_user.html', {'user': user, "posts" : posts, "following": following, "followable": followable})
     
 @login_required
 def profile(request):
