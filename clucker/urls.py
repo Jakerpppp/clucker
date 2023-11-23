@@ -22,14 +22,14 @@ from microblogs import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", views.home, name = "home"),
-    path("sign_up/", views.sign_up, name = "sign_up"),
-    path("feed/", views.feed, name = "feed"),
+    path("sign_up/", views.SignUpView.as_view(), name = "sign_up"),
+    path("feed/", views.FeedView.as_view(), name = "feed"),
     path("log_in/", views.LogInView.as_view(), name = "log_in"),
     path("log_out/", views.log_out, name = "log_out"),
-    path('new_post/', views.new_post, name='new_post'),
+    path('new_post/', views.NewPostView.as_view(), name='new_post'),
     path('users/', views.UserListView.as_view(), name='user_list'),
     path('user/<int:user_id>', views.ShowUserView.as_view(), name='show_user'),
-    path('profile/', views.profile, name='profile'),
+    path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('password/', views.password, name='password'),
     path('follow_toggle/<int:user_id>', views.follow_toggle, name='follow_toggle'),
 ]
