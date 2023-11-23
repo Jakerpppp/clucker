@@ -26,7 +26,7 @@ def feed(request):
     form = PostForm()
     current_user = request.user
     posts = Post.objects.filter(author=current_user)
-    return render(request, "feed.html", {"form": form, "posts" : posts})
+    return render(request, "feed.html", {"form": form, "posts" : posts, 'user': current_user})
 
 def log_out(request):
     logout(request)
@@ -101,10 +101,11 @@ def show_user(request, user_id):
         user = User.objects.get(id=user_id)
         posts = Post.objects.filter(author = user)
         following = request.user.is_following(user)
+        followable = request.user != user
     except ObjectDoesNotExist:
         return redirect('user_list')
     else:
-        return render(request, 'show_user.html', {'user': user, "posts" : posts, "following": following})
+        return render(request, 'show_user.html', {'user': user, "posts" : posts, "following": following, "followable": followable})
     
 @login_required
 def profile(request):

@@ -34,6 +34,8 @@ class User(AbstractUser) :
         return self.gravatar(size=60)
     
     def toggle_follow(self, followee):
+        if followee == self:
+            return
         if self.is_following(followee):
             self._unfollow(followee)
         else:

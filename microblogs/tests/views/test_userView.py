@@ -9,6 +9,7 @@ class ShowUserTest(TestCase):
     def setUp(self):
         self.user = User.objects.get(username = "@johndoe")
         self.url = reverse('show_user', kwargs={'user_id': self.user.id})
+        self.target_user = User.objects.get(username = "@janedoe")
 
     def test_show_user_url(self):
         self.assertEqual(self.url,f'/user/{self.user.id}')
