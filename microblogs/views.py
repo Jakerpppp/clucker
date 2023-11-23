@@ -1,6 +1,6 @@
 from typing import Any
 from django import http
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse, Http404
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -13,6 +13,9 @@ from django.utils.decorators import method_decorator
 from .helpers import login_prohibited
 from django.contrib.auth.hashers import check_password
 from django.views import View
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 @login_prohibited
 def home(request):
@@ -102,11 +105,36 @@ def new_post(request):
     else:
         return HttpResponseForbidden()
 
-@login_required
-def user_list(request):
-    users = User.objects.all()
-    return render(request, 'user_list.html', {'users': users})
+class UserListView(LoginRequiredMixin, ListView):
+    '''Creates a List of all Users'''
+    model = User
+    template_name = 'user_list.html'
+    context_object_name = "users" #Stores the list of all users in the 'users' variable
 
+
+
+class ShowUserView(LoginRequiredMixin, DetailView):
+    '''Shows individual Data'''
+    model = User
+    template_name = 'show_user.html'
+    context_object_name = "user"
+    pk_url_kwarg = 'user_id'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        context['posts'] = Post.objects.filter(author = user)
+        context['following'] = self.request.user.is_following(user)
+        context['followable'] = self.request.user != user
+        return context
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            return super().get(request, *args, **kwargs)
+        except Http404:
+            return redirect('user_list')
+
+    
 
 @login_required
 def show_user(request, user_id):
