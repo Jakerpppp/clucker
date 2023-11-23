@@ -2,19 +2,15 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
 from microblogs.forms import LogInForm, SignUpForms, PostForm, UserForm, PasswordForm
-
 from .models import Post, User
 from django.http import HttpResponseForbidden
-
 from django.core.exceptions import ObjectDoesNotExist
-
 from django.contrib.auth.decorators import login_required
-
+from django.utils.decorators import method_decorator
 from .helpers import login_prohibited
-
 from django.contrib.auth.hashers import check_password
+from django.views import View
 
 @login_prohibited
 def home(request):
@@ -43,6 +39,36 @@ def follow_toggle(request, user_id):
         return redirect('user_list')
     else:
         return redirect('show_user', user_id)
+    
+
+class LogInView(View):
+    '''Log In View'''
+
+    http_method_names = ['get', 'post']
+
+    @method_decorator(login_prohibited)
+    def get(self, request):
+        '''Display Log In View'''
+        form = LogInForm()
+        next = request.GET.get('next') or ''
+        return render(request, "log_in.html", {"form": form, "next" : next})
+
+    @method_decorator(login_prohibited)
+    def post(self, request):
+        '''Handle Log In Attempt'''
+        form = LogInForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                redirect_url = request.POST.get('next') or 'feed'
+                return redirect(redirect_url)
+            messages.add_message(request, messages.ERROR, "The Credentials Provided were Invalid")
+        next = request.GET.get('next') or ''
+        return render(request, "log_in.html", {"form": form, "next" : next})
+
 
 @login_prohibited
 def log_in(request):
