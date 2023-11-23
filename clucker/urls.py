@@ -31,4 +31,5 @@ urlpatterns = [
     path('user/<int:user_id>', views.show_user, name='show_user'),
     path('profile/', views.profile, name='profile'),
     path('password/', views.password, name='password'),
+    path('follow_toggle/<int:user_id>', views.follow_toggle, name='follow_toggle'),
 ]
