@@ -25,12 +25,24 @@ def home(request):
 def feed(request):
     form = PostForm()
     current_user = request.user
-    posts = Post.objects.filter(author=current_user)
-    return render(request, "feed.html", {"form": form, "posts" : posts})
+    authors = list(current_user.followees.all()) + [current_user]
+    posts = Post.objects.filter(author__in=authors)
+    return render(request, "feed.html", {"form": form, "posts" : posts, 'user': current_user})
 
 def log_out(request):
     logout(request)
     return redirect("home")
+
+@login_required
+def follow_toggle(request, user_id):
+    current_user = request.user
+    try:
+        followee = User.objects.get(id = user_id)
+        current_user.toggle_follow(followee)
+    except ObjectDoesNotExist:
+        return redirect('user_list')
+    else:
+        return redirect('show_user', user_id)
 
 @login_prohibited
 def log_in(request):
@@ -89,10 +101,12 @@ def show_user(request, user_id):
     try:
         user = User.objects.get(id=user_id)
         posts = Post.objects.filter(author = user)
+        following = request.user.is_following(user)
+        followable = request.user != user
     except ObjectDoesNotExist:
         return redirect('user_list')
     else:
-        return render(request, 'show_user.html', {'user': user, "posts" : posts})
+        return render(request, 'show_user.html', {'user': user, "posts" : posts, "following": following, "followable": followable})
     
 @login_required
 def profile(request):

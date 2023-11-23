@@ -37,3 +37,24 @@ class FeedViewTestCase(TestCase):
             self.assertNotContains(response, f'Post__{count}')
         for count in range(200, 203):
             self.assertContains(response, f'Post__{count}')
+
+    def test_feed_shows_users_followees_posts(self):
+        self.client.login(username="@johndoe", password='Password123')
+        jane = User.objects.get(username='@janedoe')
+        petra = User.objects.get(username = '@petrapickles')
+        peter = User.objects.get(username = '@peterpickles')
+        create_posts(self.user, 100, 103)
+        create_posts(jane, 200, 203)
+        create_posts(petra, 300, 303)
+        create_posts(peter, 400, 403)
+        self.user.toggle_follow(jane)
+        self.user.toggle_follow(petra)
+        response = self.client.get(self.url)
+        for count in range(100, 103):
+            self.assertContains(response, f'Post__{count}')
+        for count in range(200, 203):
+            self.assertContains(response, f'Post__{count}')
+        for count in range(300,303):
+            self.assertContains(response, f'Post__{count}')
+        for count in range(400,403):
+            self.assertNotContains(response, f'Post__{count}')

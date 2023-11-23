@@ -18,6 +18,7 @@ class User(AbstractUser) :
     last_name = models.CharField(max_length=50,unique=False,blank=False)
     email = models.EmailField(unique=True,blank=False)
     bio = models.CharField(max_length=520, blank=True)
+    followers = models.ManyToManyField('self', symmetrical=False, related_name="followees")
 
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
@@ -31,6 +32,29 @@ class User(AbstractUser) :
     """Return a URL to a miniature version of the user's gravatar."""
     def mini_gravatar(self):
         return self.gravatar(size=60)
+    
+    def toggle_follow(self, followee):
+        if followee == self:
+            return
+        if self.is_following(followee):
+            self._unfollow(followee)
+        else:
+            self._follow(followee)
+
+    def _unfollow(self, user):
+        user.followers.remove(self)
+
+    def _follow(self, user):
+        user.followers.add(self)
+
+    def is_following(self, user):
+        return user in self.followees.all()
+
+    def follower_count(self):
+        return self.followers.count()
+
+    def followee_count(self):
+        return self.followees.count()
 
 """Posts by users in their microblogs."""
 class Post(models.Model):

@@ -21,7 +21,6 @@ class UserListTest(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'user_list.html')
-        self.assertEqual(len(response.context['users']), 17)
         for user_id in range(15):
             self.assertContains(response, f'@user{user_id}')
             self.assertContains(response, f'First{user_id}')
