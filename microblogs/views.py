@@ -25,7 +25,8 @@ def home(request):
 def feed(request):
     form = PostForm()
     current_user = request.user
-    posts = Post.objects.filter(author=current_user)
+    authors = list(current_user.followees.all()) + [current_user]
+    posts = Post.objects.filter(author__in=authors)
     return render(request, "feed.html", {"form": form, "posts" : posts, 'user': current_user})
 
 def log_out(request):
