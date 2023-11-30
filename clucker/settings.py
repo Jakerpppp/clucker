@@ -142,3 +142,6 @@ MESSAGE_TAGS = {
     message_constants.ERROR: "danger"
 
 }
+
+USERS_PER_PAGE = 10
+POSTS_PER_PAGE = 10

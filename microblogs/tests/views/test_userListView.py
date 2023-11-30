@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from microblogs.models import User
-
+from django.conf import settings
 
 
 class UserListTest(TestCase):
@@ -17,14 +17,50 @@ class UserListTest(TestCase):
 
     def test_get_user_list(self):
         self.client.login(username = self.user.username, password = "Password123")
-        self._create_test_users(15)
+        self._create_test_users(settings.USERS_PER_PAGE )
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'user_list.html')
-        for user_id in range(15):
+        for user_id in range(settings.USERS_PER_PAGE - 5):
             self.assertContains(response, f'@user{user_id}')
             self.assertContains(response, f'First{user_id}')
             self.assertContains(response, f'Last{user_id}')
+
+    """ def test_get_user_list_with_pagination(self):
+        self.client.login(username=self.user.username, password='Password123')
+        self._create_test_users(settings.USERS_PER_PAGE*2+3-1)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'user_list.html')
+        self.assertEqual(len(response.context['users']), settings.USERS_PER_PAGE)
+        self.assertTrue(response.context['is_paginated'])
+        page_obj = response.context['page_obj']
+        self.assertFalse(page_obj.has_previous())
+        self.assertTrue(page_obj.has_next())
+        page_one_url = reverse('user_list') + '?page=1'
+        response = self.client.get(page_one_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'user_list.html')
+        self.assertEqual(len(response.context['users']), settings.USERS_PER_PAGE)
+        page_obj = response.context['page_obj']
+        self.assertFalse(page_obj.has_previous())
+        self.assertTrue(page_obj.has_next())
+        page_two_url = reverse('user_list') + '?page=2'
+        response = self.client.get(page_two_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'user_list.html')
+        self.assertEqual(len(response.context['users']), settings.USERS_PER_PAGE)
+        page_obj = response.context['page_obj']
+        self.assertTrue(page_obj.has_previous())
+        self.assertTrue(page_obj.has_next())
+        page_three_url = reverse('user_list') + '?page=3'
+        response = self.client.get(page_three_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'user_list.html')
+        self.assertEqual(len(response.context['users']), 6)
+        page_obj = response.context['page_obj']
+        self.assertTrue(page_obj.has_previous())
+        self.assertFalse(page_obj.has_next()) """
 
     def test_user_list_when_not_logged_in(self):
         redirect_url = reverse("log_in") + f"?next={self.url}"

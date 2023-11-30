@@ -21,6 +21,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse
+from django.conf import settings
 
 @login_prohibited
 def home(request):

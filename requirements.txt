@@ -16,3 +16,4 @@ coverage==7.3.2
 django-widget-tweaks==1.5.0
 libgravatar==1.0.4
 humanize==4.8.0
+django-bootstrap-pagination==1.7.1

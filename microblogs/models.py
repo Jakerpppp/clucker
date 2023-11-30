@@ -20,6 +20,9 @@ class User(AbstractUser) :
     bio = models.CharField(max_length=520, blank=True)
     followers = models.ManyToManyField('self', symmetrical=False, related_name="followees")
 
+    class Meta:
+        ordering = ['last_name', 'first_name']
+
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
     
