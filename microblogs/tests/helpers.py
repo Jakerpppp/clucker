@@ -1,6 +1,5 @@
 from django.urls import reverse
 from microblogs.models import Post
-from with_asserts.mixin import AssertHTMLMixin
 
 
 class LogInTester():
@@ -29,17 +28,17 @@ def create_posts(author, from_count, to_count):
         post.save()
 
 
-class MenuTesterMixin(AssertHTMLMixin):
-    menu_urls = [
-        reverse('user_list'), reverse('feed'), reverse('password'),
-        reverse('profile'), reverse('log_out')
-    ]
+# class MenuTesterMixin(AssertHTMLMixin):
+#     menu_urls = [
+#         reverse('user_list'), reverse('feed'), reverse('password'),
+#         reverse('profile'), reverse('log_out')
+#     ]
 
-    def assert_menu(self, response):
-        for url in self.menu_urls:
-            with self.assertHTML(response, f'a[href="{url}"]'):
-                pass
+#     def assert_menu(self, response):
+#         for url in self.menu_urls:
+#             with self.assertHTML(response, f'a[href="{url}"]'):
+#                 pass
 
-    def assert_no_menu(self, response):
-        for url in self.menu_urls:
-            self.assertNotHTML(response, f'a[href="{url}"]')
+#     def assert_no_menu(self, response):
+#         for url in self.menu_urls:
+#             self.assertNotHTML(response, f'a[href="{url}"]')

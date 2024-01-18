@@ -93,7 +93,7 @@ class Command(BaseCommand):
             if random() < self.FOLLOW_PROBABILITY:
                 user.toggle_follow(follower)
 
-def create_username(first_name, last_name):
+def create_username(first_name, last_name): 
     return '@' + first_name.lower() + last_name.lower()
 
 def create_email(first_name, last_name):
