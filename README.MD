@@ -3,6 +3,7 @@
 ## Overview
 
 Welcome to Clucker, a Django-based microblogging application developed as part of the Software Engineering Group Project by Dr Jeroen Keppens in order to learn the Fundamentals of Django Website Development. This project is a Chicken Styled Microblogs application inspired by Twitter, where the primary focus is on mastering Django and Test Driven Development (TDD) with automated testing. Clucker allows users to create authenticated profiles, post blog messages, follow other users, and view personalized feeds.
+- Made in from October 2023 to November 2023
 
 ## Features
 
